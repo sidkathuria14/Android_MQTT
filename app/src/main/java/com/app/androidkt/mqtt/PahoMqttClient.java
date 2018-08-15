@@ -3,6 +3,7 @@ package com.app.androidkt.mqtt;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -20,12 +21,12 @@ import java.io.UnsupportedEncodingException;
 
 public class PahoMqttClient {
 
-    private static final String TAG = "PahoMqttClient";
+    private static final String TAG = "main";
     private MqttAndroidClient mqttAndroidClient;
 
-    public MqttAndroidClient getMqttClient(Context context, String brokerUrl, String clientId) {
+    public MqttAndroidClient getMqttClient(final Context context, String brokerUrl, String clientId) {
 
-        mqttAndroidClient = new MqttAndroidClient(context, brokerUrl, clientId);
+        mqttAndroidClient = new MqttAndroidClient( context, brokerUrl, clientId);
         try {
             IMqttToken token = mqttAndroidClient.connect(getMqttConnectionOption());
             token.setActionCallback(new IMqttActionListener() {
@@ -33,6 +34,7 @@ public class PahoMqttClient {
                 public void onSuccess(IMqttToken asyncActionToken) {
                     mqttAndroidClient.setBufferOpts(getDisconnectedBufferOptions());
                     Log.d(TAG, "Success");
+                    Toast.makeText(context, "connected successfully", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -77,9 +79,9 @@ public class PahoMqttClient {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setCleanSession(false);
         mqttConnectOptions.setAutomaticReconnect(true);
-        //mqttConnectOptions.setWill(Constants.PUBLISH_TOPIC, "I am going offline".getBytes(), 1, true);
-        //mqttConnectOptions.setUserName("ngbllzzy");
-        //mqttConnectOptions.setPassword("WtjhZKl3OPoK".toCharArray());
+        mqttConnectOptions.setWill(Constants.PUBLISH_TOPIC, "I am going offline".getBytes(), 1, true);
+        mqttConnectOptions.setUserName("ngbllzzy");
+        mqttConnectOptions.setPassword("WtjhZKl3OPoK".toCharArray());
         return mqttConnectOptions;
     }
 
